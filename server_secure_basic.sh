@@ -1,7 +1,14 @@
 #!/bin/bash
 
-echo "This scripts serves to act as a single execution script to quickly and efficiently provision a basic security setup on your server, particularly a servers that are immediately exposed to the web [E.G: servers spun up on data centers]."
+set_status() {
+	if [ -z "${1}"]; then
+		${2}=false
+	else
+		${2}=true	
+}
 
+echo "This scripts serves to act as a single execution script to quickly and efficiently provision a basic security setup on your server, particularly a servers that are immediately exposed to the web [E.G: servers spun up on data centers]."
+echo "[NOTICE] It is recommended to have already made a SSH key pair for your remote host(s) and server, that is because this script will modify openSSH configs to deny certain parameters such as root login"
 echo "This script currently serves the following Linux flavors:"
 echo "- Debian buster/10"
 
@@ -50,7 +57,8 @@ sudo apt-get install -y ufw, fail2ban, net-tools, snort
 # 	- be able to parse and look for ports that are not 22
 #	- any other ideas....etc
 # - further modify open ssh configs
-
+# - fine tune openssh
+# - configure snort
 
 # UFW set up
 # ==========
@@ -61,9 +69,16 @@ sudo ufw allow 22
 sudo ufw enable 
 
 # sshd_config
+# ===========
 
 sshconf_dir="/etc/ssh/sshd_config"
 
 
-sed 's/# #PermitRootLogin yes/PermitRootLogin no/' ${sshconf_dir}
-sed 's/# #PasswordAuthentication yes/PasswordAuthentication no/' ${sshconf_dir}
+sudo sed 's/# #PermitRootLogin yes/PermitRootLogin no/' ${sshconf_dir}
+sudo sed 's/# #PasswordAuthentication yes/PasswordAuthentication no/' ${sshconf_dir}
+sudo systemctl restart 
+
+
+SSH_service_status="${sudo systemctl status ssh | grep "active (running)"}"
+
+set_status SSH_service_status SSH_status
