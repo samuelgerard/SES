@@ -22,8 +22,12 @@ Current tools and protocols used:
 
 
 # How to use
-After spinning up your server and connecting to it, execute the following string of commands
+After spinning up your server and connecting to it, execute the following string of commands:
+
 `git clone https://github.com/samuelgerard/SES.git`
+
 `cd SES`
+
 `chmod +x secure_server_basic.sh`
+
 `./secure_server_basic.sh`
